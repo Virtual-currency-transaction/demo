@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="zh">
+  <head>
+    <title>ckw</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- vue -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- axios -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+      
+    <div class="jumbotron">
+        <h1 class="display-3">SpringMVC+MyBatis+Vue</h1>
+    </div>
+
+    <div id="app" class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- 客户名字 -->
+                       <div class="form-group">
+                         <label for="">客户名字</label>
+                         <input type="text"
+                        v-model="fname"
+                           class="form-control" name="" id="" aria-describedby="helpId" placeholder="客户名字">
+                       </div>
+                       <!-- 地点 -->
+                       <div class="form-group">
+                        <label for="">地区</label>
+                        <select v-model="farea" class="form-control" name="" id="">
+                          <option>北京</option>
+                          <option>上海</option>
+                          <option>杭州</option>
+                          <option>长沙</option>
+                          <option>武汉</option>
+                        </select>
+                      </div>
+                      <!-- 客户经理 -->
+                      <div class="form-group">
+                        <label for="">客户经理</label>
+                        <select v-model="fprincipal" class="form-control" name="" id="">
+                          <option>刘一</option>
+                          <option>陈二</option>
+                          <option>胡汉三</option>
+                          <option>赵四</option>
+                          <option>许五</option>
+                        </select>
+                      </div>
+                      <!-- 客户等级 -->
+                      <div class="form-group">
+                        <label for="">客户等级</label>
+                        <select v-model="flevel" class="form-control" name="" id="">
+                          <option>v1</option>
+                          <option>v2</option>
+                          <option>v3</option>
+                          <option>v4</option>
+                          <option>v5</option>
+                        </select>
+                      </div>
+                      <!-- 保存 -->
+                      <button @click="insert" type="button" name="" id="" class="btn btn-primary btn-lg btn-block">保存</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <!-- 卡片 -->
+                <div class="card">
+                    <div class="card-body">
+                        <!-- 搜索行 -->
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                  <label for="">客户名称</label>
+                                  <input
+                                  v-model="name"
+                                  type="text"
+                                    class="form-control" name="" id="" aria-describedby="helpId" placeholder="客户名字">
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="form-group">
+                                  <label for="">地区</label>
+                                  <select v-model="area" class="form-control" name="" id="">
+                                    <option>北京</option>
+                                    <option>上海</option>
+                                    <option>杭州</option>
+                                    <option>长沙</option>
+                                    <option>武汉</option>
+                                  </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label for="">客户经理</label>
+                                    <select v-model="principal" class="form-control" name="" id="">
+                                      <option>刘一</option>
+                                      <option>陈二</option>
+                                      <option>胡汉三</option>
+                                      <option>赵四</option>
+                                      <option>许五</option>
+                                    </select>
+                                  </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="form-group">
+                                    <label for="">客户等级</label>
+                                    <select v-model="level" class="form-control" name="" id="">
+                                      <option>v1</option>
+                                      <option>v2</option>
+                                      <option>v3</option>
+                                      <option>v4</option>
+                                      <option>v5</option>
+                                    </select>
+                                  </div>
+                            </div>
+                            <button @click="search()" type="button" class="btn btn-outline-primary">搜索</button>
+                        </div>
+                        <!-- 表格 -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>编号</th>
+                                    <th>名字</th>
+                                    <th>地区</th>
+                                    <th>客户经理</th>
+                                    <th>客户等级</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(item, index) in customerList" :key="index">
+                                    <td>{{item.id}}</td>
+                                    <td>{{item.name}}</td>
+                                    <td>{{item.area}}</td>
+                                    <td>{{item.principal}}</td>
+                                    <td>{{item.level}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data:{
+                customerList: [],
+                name: undefined,
+                area: undefined,
+                principal: undefined,
+                level: undefined,
+                fname:"",
+                farea:"",
+                fprincipal:"",
+                flevel: ""
+            },
+            methods: {
+                // 搜索查询
+                search: function(){
+                    let url = `http://127.0.0.1:9000/customer`
+                    let param = {
+                        name: this.name,
+                        area: this.area,
+                        principal: this.principal,
+                        level: this.level
+                    }
+                    axios.get(url, {
+                        params: param
+                    })
+                    .then(res => {
+                        console.log(res);
+                        this.customerList = res.data
+                    })
+                },
+                // 添加数据
+                insert: function() {
+                    let url = `http://127.0.0.1:9000/customer`
+                    let params = {
+                        name: this.fname,
+                        area: this.farea,
+                        principal: this.fprincipal,
+                        level: this.flevel
+                    }
+                    axios.post(url,params)
+                    .then(res => {
+                        console.log(res)
+                        // 重新查询数据
+                        axios.get("http://127.0.0.1:9000/customer")
+                        .then(res => {
+                            console.log(res)
+                            this.customerList = res.data
+                        })
+                        .catch(err => {
+                            console.error(err); 
+                        })
+                    })
+                    .catch(err => {
+                        console.error(err); 
+                    })
+                }
+            },
+            created() {
+                // 查询所有信息
+                axios.get("http://127.0.0.1:9000/customer")
+                .then(res => {
+                    console.log(res)
+                    this.customerList = res.data
+                })
+                .catch(err => {
+                    console.error(err); 
+                })
+            },
+        })
+    </script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
